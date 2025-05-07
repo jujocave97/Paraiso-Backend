@@ -27,6 +27,10 @@ public class ReservaCake {
 
     private LocalDateTime fechaReserva = LocalDateTime.now();
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private EstadoReserva estado = EstadoReserva.PENDIENTE;
+
     public Long getId() {
         return id;
     }
@@ -65,5 +69,13 @@ public class ReservaCake {
 
     public void setFechaReserva(LocalDateTime fechaReserva) {
         this.fechaReserva = fechaReserva;
+    }
+
+    public EstadoReserva getEstado() {
+        return estado;
+    }
+
+    public void setEstado(EstadoReserva estado) {
+        this.estado = estado;
     }
 }

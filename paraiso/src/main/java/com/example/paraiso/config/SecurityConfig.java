@@ -5,15 +5,17 @@ import com.example.paraiso.security.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.*;
-import org.springframework.security.config.annotation.authentication.configuration.*;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.*;
+import org.springframework.security.config.http.*;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.*;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
+@EnableMethodSecurity(prePostEnabled = true) // 👈 Habilita @PreAuthorize
 public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
@@ -29,17 +31,10 @@ public class SecurityConfig {
         return http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        // RUTAS PÚBLICAS (no autenticación requerida)
-                        .requestMatchers("/api/auth/**").permitAll()
-
-                        // RUTAS EXCLUSIVAS PARA ADMINISTRADORES
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
-
-                        // RUTAS PARA USUARIOS REGISTRADOS (USUARIO o ADMIN)
-                        .requestMatchers("/api/user/**").hasAnyRole("USUARIO", "ADMIN")
-
-                        // CUALQUIER OTRA RUTA REQUIERE AUTENTICACIÓN
-                        .anyRequest().authenticated()
+                        .requestMatchers("/api/auth/**").permitAll() // Público: login, registro
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN") // Solo ADMIN
+                        .requestMatchers("/api/user/**").hasAnyRole("ADMIN", "USUARIO") // Usuarios autenticados
+                        .anyRequest().authenticated() // Todo lo demás requiere login
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
@@ -47,8 +42,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authManager(AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+        return authConfig.getAuthenticationManager();
     }
 
     @Bean

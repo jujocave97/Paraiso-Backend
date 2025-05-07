@@ -1,6 +1,7 @@
 package com.example.paraiso.service;
 
 import com.example.paraiso.model.Cake;
+import com.example.paraiso.model.EstadoReserva;
 import com.example.paraiso.model.ReservaCake;
 import com.example.paraiso.model.User;
 import com.example.paraiso.repository.CakeRepository;
@@ -8,6 +9,8 @@ import com.example.paraiso.repository.ReservaCakeRepository;
 import com.example.paraiso.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class ReservaCakeService {
@@ -35,4 +38,18 @@ public class ReservaCakeService {
 
         return reservaRepo.save(reserva);
     }
+
+    public ReservaCake actualizarEstado(Long reservaId, EstadoReserva nuevoEstado) {
+        ReservaCake reserva = reservaRepo.findById(reservaId)
+                .orElseThrow(() -> new RuntimeException("Reserva no encontrada"));
+
+        reserva.setEstado(nuevoEstado);
+        return reservaRepo.save(reserva);
+    }
+
+    public List<ReservaCake> obtenerTodasLasReservas() {
+        return reservaRepo.findAll();
+    }
+
+
 }
