@@ -4,6 +4,7 @@ import com.example.paraiso.dto.AuthRequest;
 import com.example.paraiso.model.User;
 import com.example.paraiso.repository.UserRepository;
 import com.example.paraiso.security.JwtUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,17 +17,15 @@ import java.util.Map;
 @RequestMapping("/api/auth")
 public class AuthController { // todo: crear service
 
-    private final AuthenticationManager authManager;
-    private final UserRepository userRepo;
-    private final PasswordEncoder encoder;
-    private final JwtUtil jwtUtil;
+    @Autowired
+    private AuthenticationManager authManager;
+    @Autowired
+    private UserRepository userRepo;
+    @Autowired
+    private PasswordEncoder encoder;
+    @Autowired
+    private JwtUtil jwtUtil;
 
-    public AuthController(AuthenticationManager am, UserRepository repo, PasswordEncoder enc, JwtUtil jwt) {
-        this.authManager = am;
-        this.userRepo = repo;
-        this.encoder = enc;
-        this.jwtUtil = jwt;
-    }
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody User user) {

@@ -1,6 +1,7 @@
 package com.example.paraiso.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -28,8 +29,9 @@ public class User {
     @Column(nullable = false)
     private String apellido;
 
-    @Column(nullable = false, unique = true)
-    private int telefono;
+    @Column(nullable = false)
+    @Pattern(regexp = "^\\+?\\d{9,15}$", message = "Número de teléfono inválido")
+    private String telefono;
 
     @Column(name = "reset_password_token")
     private String resetPasswordToken;
@@ -40,16 +42,6 @@ public class User {
     @Column(nullable = false)
     private String rol; // ADMIN o USUARIO
 
-    public User(String email, String password, String nombre, String apellido, int telefono, String resetPasswordToken, LocalDateTime tokenExpiration, String rol) {
-        this.email = email;
-        this.password = password;
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.telefono = telefono;
-        this.resetPasswordToken = resetPasswordToken;
-        this.tokenExpiration = tokenExpiration;
-        this.rol = rol;
-    }
 
     public Long getId() {
         return id;
@@ -91,11 +83,11 @@ public class User {
         this.apellido = apellido;
     }
 
-    public int getTelefono() {
+    public @Pattern(regexp = "^\\+?\\d{9,15}$", message = "Número de teléfono inválido") String getTelefono() {
         return telefono;
     }
 
-    public void setTelefono(int telefono) {
+    public void setTelefono(@Pattern(regexp = "^\\+?\\d{9,15}$", message = "Número de teléfono inválido") String telefono) {
         this.telefono = telefono;
     }
 

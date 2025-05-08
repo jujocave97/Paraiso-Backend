@@ -33,6 +33,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll() // Público: login, registro
                         .requestMatchers("/api/admin/**").hasRole("ADMIN") // Solo ADMIN
+                        .requestMatchers("/api/cakes/create").hasRole("ADMIN") // Solo ADMIN
                         .requestMatchers("/api/user/**").hasAnyRole("ADMIN", "USUARIO") // Usuarios autenticados
                         .anyRequest().authenticated() // Todo lo demás requiere login
                 )
