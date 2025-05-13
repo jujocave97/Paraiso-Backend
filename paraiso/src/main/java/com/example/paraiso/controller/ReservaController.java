@@ -42,4 +42,13 @@ public class ReservaController {
         return ResponseEntity.ok(reserva);
     }
 
+    @DeleteMapping("/reserva") // preguntar si quiere una confirmacion de la tienda para poder hacer la eliminacion
+    public ResponseEntity<ReservaCake> deleteReserva(
+        @RequestParam Long reservaID
+    ){
+        ReservaCake reservaCake = reservaService.deleteReserva(reservaID);
+        return ResponseEntity.ok(reservaCake);
+    }
+
+
 }

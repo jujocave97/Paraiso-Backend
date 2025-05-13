@@ -51,5 +51,12 @@ public class ReservaCakeService {
         return reservaRepo.findAll();
     }
 
+    public ReservaCake deleteReserva(Long reservaId){
+        ReservaCake reserva = reservaRepo.findById(reservaId)
+                .orElseThrow(() -> new RuntimeException("Reserva no encontrada"));
+
+        reservaRepo.delete(reserva);
+        return reserva;
+    }
 
 }
