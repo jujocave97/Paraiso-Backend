@@ -6,6 +6,7 @@ import com.example.paraiso.dto.UserInformationDTO;
 import com.example.paraiso.model.User;
 import com.example.paraiso.repository.UserRepository;
 import com.example.paraiso.security.JwtUtil;
+import com.example.paraiso.service.AuthService;
 import com.example.paraiso.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,6 +32,8 @@ public class UserController {
     private UserService userService;
     @Autowired
     private PasswordEncoder encoder;
+    @Autowired
+    private AuthService authService;
 
     @GetMapping("/") // solo admin
     public ResponseEntity<?> allUsers(){
@@ -42,12 +45,7 @@ public class UserController {
     public ResponseEntity<?> getUserEmail(
             @PathVariable String email
     ){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        String emailAuth = authentication.getName();
-        boolean isAdmin = authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
-
-        if (!isAdmin && !emailAuth.equals(email)) {
+        if (!authService.isAdminOrSameUser(email)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No autorizado");
         }
 
@@ -59,6 +57,9 @@ public class UserController {
     public ResponseEntity<?> updateUser(
             @PathVariable String email, @RequestBody UserInformationDTO userInformationDTO
     ){
+        if (!authService.isAdminOrSameUser(email)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No autorizado");
+        }
         UserInformationDTO userUpdated = userService.updateUser(email,userInformationDTO);
         return ResponseEntity.ok(userUpdated);
     }
@@ -67,6 +68,9 @@ public class UserController {
     public ResponseEntity<?> deleteUSer(
             @PathVariable String email
     ){
+        if (!authService.isAdminOrSameUser(email)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No autorizado");
+        }
         return ResponseEntity.ok(userService.deleteUser(email));
     }
 

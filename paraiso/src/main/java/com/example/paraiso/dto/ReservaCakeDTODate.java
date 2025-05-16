@@ -9,6 +9,9 @@ public class ReservaCakeDTODate {
     private LocalDateTime dateTime;
     private String estadoReserva;
 
+    public ReservaCakeDTODate() {
+    }
+
     public ReservaCakeDTODate(String usuario, String cake, int cantidad, LocalDateTime dateTime, String estadoReserva) {
         this.usuario = usuario;
         this.cake = cake;

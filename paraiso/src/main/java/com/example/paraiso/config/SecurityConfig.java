@@ -32,7 +32,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll() // Público: login, registro
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN") // Solo ADMIN
+                        .requestMatchers("/api/users/").hasRole("ADMIN") // Solo ADMIN
                         .requestMatchers("/api/cakes/create").hasRole("ADMIN") // Solo ADMIN
                         .requestMatchers("/api/users/**").hasAnyRole("ADMIN", "USUARIO") // Usuarios autenticados
                         .anyRequest().authenticated() // Todo lo demás requiere login

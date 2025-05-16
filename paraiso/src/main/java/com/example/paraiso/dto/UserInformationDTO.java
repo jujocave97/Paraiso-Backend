@@ -7,6 +7,9 @@ public class UserInformationDTO {
     private String email;
     private String rol;
 
+    public UserInformationDTO() {
+    }
+
     public UserInformationDTO(String email, String telefono, String apellidos, String nombre) {
         this.email = email;
         this.telefono = telefono;

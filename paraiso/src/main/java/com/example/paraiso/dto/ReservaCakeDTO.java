@@ -5,6 +5,10 @@ public class ReservaCakeDTO {
     private String cake;
     private int cantidad;
 
+    public ReservaCakeDTO() {
+
+    }
+
     public ReservaCakeDTO(String usuario, String cake, int cantidad) {
         this.usuario = usuario;
         this.cake = cake;
