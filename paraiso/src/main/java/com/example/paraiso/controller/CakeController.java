@@ -1,5 +1,6 @@
 package com.example.paraiso.controller;
 
+import com.example.paraiso.dto.CakeDTO;
 import com.example.paraiso.model.Cake;
 import com.example.paraiso.model.EstadoReserva;
 import com.example.paraiso.model.ReservaCake;
@@ -32,9 +33,10 @@ public class CakeController {  // todo: crear service
     // Crear tarta (ADMIN)
     @PostMapping("/create")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Cake> createCake(@RequestBody Cake cake) {
+    public ResponseEntity<CakeDTO> createCake(@RequestBody CakeDTO cake) {
         return ResponseEntity.ok(cakeService.crearCake(cake));
         // manejar errores
     }
+
 
 }
