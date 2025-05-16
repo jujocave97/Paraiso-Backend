@@ -14,9 +14,10 @@ public class JwtUtil {
     private final Key SECRET_KEY = Keys.hmacShaKeyFor("paraiso_super_secret_paraiso_super_secret".getBytes(StandardCharsets.UTF_8));
     private final long EXPIRATION_MS = 3600000; // 1 hora
 
-    public String generateToken(String email) {
+    public String generateToken(String email, String role) {
         return Jwts.builder()
                 .setSubject(email)
+                .claim("role",role)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_MS))
                 .signWith(SECRET_KEY, SignatureAlgorithm.HS256)

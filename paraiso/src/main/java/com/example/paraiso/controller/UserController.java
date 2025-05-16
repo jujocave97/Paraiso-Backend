@@ -8,9 +8,12 @@ import com.example.paraiso.repository.UserRepository;
 import com.example.paraiso.security.JwtUtil;
 import com.example.paraiso.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.*;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -35,11 +38,19 @@ public class UserController {
         return ResponseEntity.ok(userInformationDTOS);
     }
 
-    @PreAuthorize("hasRole('ADMIN') or #email == authentication.name")
     @GetMapping("/{email}")
     public ResponseEntity<?> getUserEmail(
             @PathVariable String email
     ){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        String emailAuth = authentication.getName();
+        boolean isAdmin = authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+        if (!isAdmin && !emailAuth.equals(email)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No autorizado");
+        }
+
         UserInformationDTO userInformationDTO = userService.getUser(email);
         return ResponseEntity.ok(userInformationDTO);
     }

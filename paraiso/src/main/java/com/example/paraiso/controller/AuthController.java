@@ -45,7 +45,7 @@ public class AuthController { // todo: crear service
         );
 
         User user = userRepo.findByEmail(authRequest.getEmail()).orElseThrow();
-        String token = jwtUtil.generateToken(user.getEmail());
+        String token = jwtUtil.generateToken(user.getEmail(), user.getRol());
 
         return ResponseEntity.ok(Map.of(
                 "jwt", token,
