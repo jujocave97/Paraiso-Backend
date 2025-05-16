@@ -34,6 +34,7 @@ public class UserService {
         userRepository.save(user);
 
         userDTO.setPassword("******************");
+        userDTO.setRol(user.getRol());
         return userDTO;
     }
 
@@ -47,4 +48,41 @@ public class UserService {
         return usersInfo;
     }
 
+    public UserInformationDTO getUser(String email){
+        if(email.isBlank()){
+            // throw error
+        }
+
+        User u = userRepository.findByEmail(email).orElseThrow(); // manejar excepcion
+        return Mapper.userToUserInformation(u);
+    }
+
+    public UserInformationDTO updateUser(String email, UserInformationDTO userInfo){
+        if(email.isEmpty() || email.isBlank()) {
+            // throw error
+        }
+
+        if(userInfo.getNombre().isEmpty() || userInfo.getApellidos().isEmpty() || userInfo.getEmail().isEmpty() || userInfo.getTelefono().isEmpty()){
+            // throw error
+        }
+
+        User u = userRepository.findByEmail(email).orElseThrow(); // manejar excepcion
+        u.setNombre(userInfo.getNombre());
+        u.setApellido(userInfo.getApellidos());
+        u.setEmail(userInfo.getEmail());
+        u.setTelefono(userInfo.getTelefono());
+        userRepository.save(u);
+
+        return userInfo;
+    }
+
+    // crear recuperacion  de password
+
+    public UserInformationDTO deleteUser (String email){
+
+        User u = userRepository.findByEmail(email).orElseThrow(); // manejar excepcion
+        userRepository.delete(u);
+
+        return Mapper.userToUserInformation(u);
+    }
 }

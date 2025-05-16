@@ -8,6 +8,9 @@ public class SignUpDTO {
     private String email;
     private String rol;
 
+    public SignUpDTO(){
+
+    }
     public SignUpDTO(String nombre, String apellidos,String password, String telefono, String email) {
         this.nombre = nombre;
         this.apellidos = apellidos;

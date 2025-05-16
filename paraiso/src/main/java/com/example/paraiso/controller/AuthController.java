@@ -54,10 +54,4 @@ public class AuthController { // todo: crear service
         ));
     }
 
-    @GetMapping("/users") // solo admin
-    public ResponseEntity<?> allUsers(){
-        List<UserInformationDTO> userInformationDTOS = userService.getAllUsers();
-        return ResponseEntity.ok(userInformationDTOS);
-    }
-    // hacer otro controller?
 }
