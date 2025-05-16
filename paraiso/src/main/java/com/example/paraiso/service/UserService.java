@@ -28,6 +28,11 @@ public class UserService {
             //throw new BadRequestException("Formato de contraseña inválido");
         }
 
+        if (!isEmailValid(userDTO.getEmail())) {
+            throw new IllegalArgumentException("Formato de email inválido");
+        }
+
+
         String password = userDTO.getPassword();
         userDTO.setPassword(encoder.encode(password));
         User user = Mapper.signUpDTOToUser(userDTO);
@@ -36,6 +41,11 @@ public class UserService {
         userDTO.setPassword("******************");
         userDTO.setRol(user.getRol());
         return userDTO;
+    }
+
+    public boolean isEmailValid(String email) {
+        String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
+        return email != null && email.matches(emailRegex);
     }
 
     public List<UserInformationDTO> getAllUsers(){

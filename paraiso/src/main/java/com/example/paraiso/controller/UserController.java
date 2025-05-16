@@ -35,7 +35,7 @@ public class UserController {
     @Autowired
     private AuthService authService;
 
-    @GetMapping("/") // solo admin
+    @GetMapping("/")
     public ResponseEntity<?> allUsers(){
         List<UserInformationDTO> userInformationDTOS = userService.getAllUsers();
         return ResponseEntity.ok(userInformationDTOS);
@@ -74,5 +74,4 @@ public class UserController {
         return ResponseEntity.ok(userService.deleteUser(email));
     }
 
-    // probar y privatizar rutas
 }
