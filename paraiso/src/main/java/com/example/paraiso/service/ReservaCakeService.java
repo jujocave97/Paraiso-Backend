@@ -10,10 +10,12 @@ import com.example.paraiso.repository.ReservaCakeRepository;
 import com.example.paraiso.repository.UserRepository;
 import com.example.paraiso.util.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ReservaCakeService {
@@ -24,6 +26,8 @@ public class ReservaCakeService {
     private UserRepository userRepo;
     @Autowired
     private ReservaCakeRepository reservaRepo;
+    @Autowired
+    private AuthService authService;
 
 
 
@@ -69,12 +73,38 @@ public class ReservaCakeService {
         return dtos;
     }
 
-    public ReservaCake deleteReserva(Long reservaId){
-        ReservaCake reserva = reservaRepo.findById(reservaId)
-                .orElseThrow(() -> new RuntimeException("Reserva no encontrada"));
+    public List<ReservaCakeDTO> reservasUsuario (String id){
+        Long idl = Long.parseLong(id);
+        User user = userRepo.findById(idl).orElseThrow();// manejar error usuairo no encontrado
+        String email = user.getEmail();
+
+        if(!authService.isAdminOrSameUser(email)){
+            // throw error
+        }
+
+        List<ReservaCake> reservaCakes = reservaRepo.findByUsuarioId(idl);
+        List<ReservaCakeDTO> reservaCakeDTOS = new ArrayList<>();
+
+        for(ReservaCake reservaCake: reservaCakes){
+            reservaCakeDTOS.add(Mapper.reservaCakeToDTO(reservaCake));
+        }
+
+        return reservaCakeDTOS;
+    }
+
+    public ReservaCakeDTO deleteReserva(String reservaId){
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Long idl = Long.parseLong(reservaId);
+
+        if(authService.isAdminOrSameUser(email)){
+            // throw exception
+        }
+
+        ReservaCake reserva = reservaRepo.findById(idl)
+                .orElseThrow(() -> new RuntimeException("Reserva no encontrada")); // manejar esta excepcion
 
         reservaRepo.delete(reserva);
-        return reserva;
+        return Mapper.reservaCakeToDTO(reserva);
     }
 
 }

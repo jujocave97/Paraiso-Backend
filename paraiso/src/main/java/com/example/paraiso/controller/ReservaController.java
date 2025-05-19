@@ -3,6 +3,7 @@ package com.example.paraiso.controller;
 import com.example.paraiso.dto.ReservaCakeDTO;
 import com.example.paraiso.model.EstadoReserva;
 import com.example.paraiso.model.ReservaCake;
+import com.example.paraiso.service.AuthService;
 import com.example.paraiso.service.ReservaCakeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +29,8 @@ public class ReservaController {
         return ResponseEntity.ok(reservaService.actualizarEstado(id, estado));
     }
 
-    @GetMapping
+    @GetMapping("/")
+    @PreAuthorize("hasRole('ADMIN')")
     public List<ReservaCakeDTO> listarTodas() {
         return reservaService.obtenerTodasLasReservas();
     }
@@ -43,11 +45,20 @@ public class ReservaController {
         return ResponseEntity.ok(reserva);
     }
 
-    @DeleteMapping("/reserva") // preguntar si quiere una confirmacion de la tienda para poder hacer la eliminacion
-    public ResponseEntity<ReservaCake> deleteReserva(
-        @RequestParam Long reservaID
+    @GetMapping("/{id}") // usuario registrado
+    public ResponseEntity<?> reservasUsuario(
+            @PathVariable String id
     ){
-        ReservaCake reservaCake = reservaService.deleteReserva(reservaID);
+        return ResponseEntity.ok(reservaService.reservasUsuario(id));
+    }
+
+    @DeleteMapping("/{reservaID}") // preguntar si quiere una confirmacion de la tienda para poder hacer la eliminacion
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ReservaCakeDTO> deleteReserva(
+        @PathVariable String reservaID
+    ){
+
+        ReservaCakeDTO reservaCake = reservaService.deleteReserva(reservaID);
         return ResponseEntity.ok(reservaCake);
     }
 

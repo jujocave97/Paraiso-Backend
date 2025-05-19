@@ -6,6 +6,7 @@ public class UserInformationDTO {
     private String telefono;
     private String email;
     private String rol;
+    private String id;
 
     public UserInformationDTO() {
     }
@@ -17,12 +18,21 @@ public class UserInformationDTO {
         this.nombre = nombre;
     }
 
-    public UserInformationDTO(String nombre, String apellidos, String telefono, String email, String rol) {
+    public UserInformationDTO(String id,String nombre, String apellidos, String telefono, String email, String rol) {
+        this.id=id;
         this.nombre = nombre;
         this.apellidos = apellidos;
         this.telefono = telefono;
         this.email = email;
         this.rol = rol;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getNombre() {

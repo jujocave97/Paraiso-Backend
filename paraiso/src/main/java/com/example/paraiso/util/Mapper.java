@@ -22,7 +22,9 @@ public class Mapper {
     }
 
     public static UserInformationDTO userToUserInformation(User user){
+        String id = Long.toString(user.getId());
         UserInformationDTO userInfo = new UserInformationDTO(
+                id,
                 user.getNombre(),
                 user.getApellido(),
                 user.getTelefono(),
