@@ -1,5 +1,6 @@
 package com.example.paraiso.service;
 
+import com.example.paraiso.dto.ReservaCakeDTO;
 import com.example.paraiso.model.Cake;
 import com.example.paraiso.model.EstadoReserva;
 import com.example.paraiso.model.ReservaCake;
@@ -7,9 +8,11 @@ import com.example.paraiso.model.User;
 import com.example.paraiso.repository.CakeRepository;
 import com.example.paraiso.repository.ReservaCakeRepository;
 import com.example.paraiso.repository.UserRepository;
+import com.example.paraiso.util.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -24,31 +27,46 @@ public class ReservaCakeService {
 
 
 
-    public ReservaCake reservarCake(Long userId, Long cakeId, int cantidad) {
-        User user = userRepo.findById(userId)
+    public ReservaCakeDTO reservarCake(String email,ReservaCakeDTO reservaCakeDTO) {
+        User user = userRepo.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        Cake cake = cakeRepo.findById(cakeId)
+
+        Long idL = Long.parseLong(reservaCakeDTO.getCake());
+
+        Cake cake = cakeRepo.findById(idL)
                 .orElseThrow(() -> new RuntimeException("Cake no encontrado"));
 
         ReservaCake reserva = new ReservaCake();
         reserva.setUsuario(user);
         reserva.setCake(cake);
-        reserva.setCantidadReservada(cantidad);
+        reserva.setCantidadReservada(reservaCakeDTO.getCantidad());
+        reservaRepo.save(reserva);
 
-        return reservaRepo.save(reserva);
+
+        return Mapper.reservaCakeToDTO(reserva);
     }
 
-    public ReservaCake actualizarEstado(Long reservaId, EstadoReserva nuevoEstado) {
-        ReservaCake reserva = reservaRepo.findById(reservaId)
+    public ReservaCakeDTO actualizarEstado(String reservaId, String nuevoEstado) {
+        Long idL = Long.parseLong(reservaId);
+        ReservaCake reserva = reservaRepo.findById(idL)
                 .orElseThrow(() -> new RuntimeException("Reserva no encontrada"));
 
-        reserva.setEstado(nuevoEstado);
-        return reservaRepo.save(reserva);
+        reserva.setEstado(EstadoReserva.valueOf(nuevoEstado));
+        reservaRepo.save(reserva);
+
+        return Mapper.reservaCakeToDTO(reserva);
     }
 
-    public List<ReservaCake> obtenerTodasLasReservas() {
-        return reservaRepo.findAll();
+    public List<ReservaCakeDTO> obtenerTodasLasReservas() {
+        List<ReservaCake> reservas = reservaRepo.findAll();
+        List<ReservaCakeDTO> dtos = new ArrayList<>();
+
+        for(ReservaCake reservaCake: reservas){
+            dtos.add(Mapper.reservaCakeToDTO(reservaCake));
+        }
+
+        return dtos;
     }
 
     public ReservaCake deleteReserva(Long reservaId){

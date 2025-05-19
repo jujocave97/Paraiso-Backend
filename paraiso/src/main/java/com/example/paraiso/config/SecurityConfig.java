@@ -35,6 +35,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/users/").hasRole("ADMIN") // Solo ADMIN
                         .requestMatchers("/api/cakes/create").hasRole("ADMIN") // Solo ADMIN
                         .requestMatchers("/api/users/**").hasAnyRole("ADMIN", "USUARIO") // Usuarios autenticados
+                        .requestMatchers("/api/reservas/**").hasAnyRole("ADMIN", "USUARIO") // Usuarios autenticados
                         .anyRequest().authenticated() // Todo lo demás requiere login
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

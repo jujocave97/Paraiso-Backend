@@ -1,44 +1,45 @@
 package com.example.paraiso.controller;
 
+import com.example.paraiso.dto.ReservaCakeDTO;
 import com.example.paraiso.model.EstadoReserva;
 import com.example.paraiso.model.ReservaCake;
 import com.example.paraiso.service.ReservaCakeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/admin/reservas")
+@RequestMapping("/api/reservas")
 
 public class ReservaController {
 
     @Autowired
     private ReservaCakeService reservaService;
 
-    @PutMapping("/{id}/estado")
+    @PutMapping("/{id}/estado/{estado}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ReservaCake> cambiarEstado(
-            @PathVariable Long id,
-            @RequestParam EstadoReserva estado) {
+    public ResponseEntity<ReservaCakeDTO> cambiarEstado(
+            @PathVariable String id,
+            @PathVariable String estado) {
         return ResponseEntity.ok(reservaService.actualizarEstado(id, estado));
     }
 
     @GetMapping
-    public List<ReservaCake> listarTodas() {
+    public List<ReservaCakeDTO> listarTodas() {
         return reservaService.obtenerTodasLasReservas();
     }
 
     // Reservar tarta
     @PostMapping("/reservar")
-    public ResponseEntity<ReservaCake> reservarCake(
-            @RequestParam Long userId,
-            @RequestParam Long cakeId,
-            @RequestParam int cantidad
+    public ResponseEntity<ReservaCakeDTO> reservarCake(
+            @RequestBody ReservaCakeDTO reservaCakeDTO
     ) {
-        ReservaCake reserva = reservaService.reservarCake(userId, cakeId, cantidad);
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        ReservaCakeDTO reserva = reservaService.reservarCake(email,reservaCakeDTO);
         return ResponseEntity.ok(reserva);
     }
 
@@ -50,5 +51,5 @@ public class ReservaController {
         return ResponseEntity.ok(reservaCake);
     }
 
-
+    // hacer metodo cancelar reserva para usuarios pero si la reserva esta en curso, no se puede cancelar
 }

@@ -1,9 +1,11 @@
 package com.example.paraiso.util;
 
 import com.example.paraiso.dto.CakeDTO;
+import com.example.paraiso.dto.ReservaCakeDTO;
 import com.example.paraiso.dto.SignUpDTO;
 import com.example.paraiso.dto.UserInformationDTO;
 import com.example.paraiso.model.Cake;
+import com.example.paraiso.model.ReservaCake;
 import com.example.paraiso.model.User;
 
 
@@ -35,5 +37,18 @@ public class Mapper {
         newCake.setNombre(cake.getNombre());
         newCake.setDescripcion(cake.getDescripcion());
         return newCake;
+    }
+
+    public static ReservaCakeDTO reservaCakeToDTO (ReservaCake reservaCake){
+        ReservaCakeDTO reservaCakeDTO = new ReservaCakeDTO();
+
+        reservaCakeDTO.setCake(reservaCake.getCake().getNombre());
+        reservaCakeDTO.setUsuario(reservaCake.getUsuario().getNombre());
+        reservaCakeDTO.setFechaReserva(reservaCake.getFechaReserva());
+        reservaCakeDTO.setEstado(reservaCake.getEstado().toString());
+        reservaCakeDTO.setCantidad(reservaCake.getCantidadReservada());
+        reservaCakeDTO.setId(Long.toString(reservaCake.getId()));
+
+        return reservaCakeDTO;
     }
 }
