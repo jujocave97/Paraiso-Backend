@@ -33,6 +33,8 @@ public class ReservaCake {
     @Column(nullable = false)
     private EstadoReserva estado = EstadoReserva.PENDIENTE;
 
+    private String comentario;
+
     public Long getId() {
         return id;
     }
@@ -79,5 +81,13 @@ public class ReservaCake {
 
     public void setEstado(EstadoReserva estado) {
         this.estado = estado;
+    }
+
+    public String getComentario() {
+        return comentario;
+    }
+
+    public void setComentario(String comentario) {
+        this.comentario = comentario;
     }
 }

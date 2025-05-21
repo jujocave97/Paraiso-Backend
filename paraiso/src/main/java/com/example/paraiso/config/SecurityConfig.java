@@ -13,6 +13,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.*;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 @Configuration
 @EnableMethodSecurity(prePostEnabled = true) // 👈 Habilita @PreAuthorize
@@ -29,19 +34,21 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
+                .cors(cors -> {})
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll() // Público: login, registro
-                        .requestMatchers("/api/users/").hasRole("ADMIN") // Solo ADMIN
-                        .requestMatchers("/api/cakes/create").hasRole("ADMIN") // Solo ADMIN
-                        .requestMatchers("/api/users/**").hasAnyRole("ADMIN", "USUARIO") // Usuarios autenticados
-                        .requestMatchers("/api/reservas/**").hasAnyRole("ADMIN", "USUARIO") // Usuarios autenticados
-                        .anyRequest().authenticated() // Todo lo demás requiere login
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/users/").hasRole("ADMIN")
+                        .requestMatchers("/api/cakes/create").hasRole("ADMIN")
+                        .requestMatchers("/api/users/**").hasAnyRole("ADMIN", "USUARIO")
+                        .requestMatchers("/api/reservas/**").hasAnyRole("ADMIN", "USUARIO")
+                        .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
+
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
@@ -51,5 +58,18 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(List.of("http://localhost:5173"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/api/**", config);
+        return source;
     }
 }

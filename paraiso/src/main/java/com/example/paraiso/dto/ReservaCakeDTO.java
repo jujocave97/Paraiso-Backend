@@ -5,17 +5,17 @@ import java.time.LocalDateTime;
 public class ReservaCakeDTO {
     private String id;
     private String usuario;
-    private String cake;
+    private String cakeId;
     private int cantidad;
     private String estado;
     private LocalDateTime fechaReserva;
-
+    private String comentario;
     public ReservaCakeDTO() {
 
     }
 
-    public ReservaCakeDTO(String cake, int cantidad) {
-        this.cake = cake;
+    public ReservaCakeDTO(String cakeId, int cantidad) {
+        this.cakeId = cakeId;
         this.cantidad = cantidad;
     }
 
@@ -27,12 +27,12 @@ public class ReservaCakeDTO {
         this.usuario = usuario;
     }
 
-    public String getCake() {
-        return cake;
+    public String getCakeId() {
+        return cakeId;
     }
 
-    public void setCake(String cake) {
-        this.cake = cake;
+    public void setCake(String cakeId) {
+        this.cakeId = cakeId;
     }
 
     public int getCantidad() {
@@ -65,5 +65,13 @@ public class ReservaCakeDTO {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getComentario() {
+        return comentario;
+    }
+
+    public void setComentario(String comentario) {
+        this.comentario = comentario;
     }
 }

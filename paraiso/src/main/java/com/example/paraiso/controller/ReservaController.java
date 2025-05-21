@@ -1,9 +1,6 @@
 package com.example.paraiso.controller;
 
 import com.example.paraiso.dto.ReservaCakeDTO;
-import com.example.paraiso.model.EstadoReserva;
-import com.example.paraiso.model.ReservaCake;
-import com.example.paraiso.service.AuthService;
 import com.example.paraiso.service.ReservaCakeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

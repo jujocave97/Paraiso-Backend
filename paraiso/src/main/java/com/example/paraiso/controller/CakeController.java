@@ -24,6 +24,7 @@ public class CakeController {  // todo: crear service
 
 
     // Listar tartas
+    @CrossOrigin(origins = "http://localhost:5173")
     @GetMapping("/")
     public List<CakeDTO> getAllCakes() {
         return cakeService.getAllCakes();

@@ -36,7 +36,7 @@ public class ReservaCakeService {
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
 
-        Long idL = Long.parseLong(reservaCakeDTO.getCake());
+        Long idL = Long.parseLong(reservaCakeDTO.getCakeId());
 
         Cake cake = cakeRepo.findById(idL)
                 .orElseThrow(() -> new RuntimeException("Cake no encontrado"));
@@ -45,6 +45,7 @@ public class ReservaCakeService {
         reserva.setUsuario(user);
         reserva.setCake(cake);
         reserva.setCantidadReservada(reservaCakeDTO.getCantidad());
+        reserva.setComentario(reservaCakeDTO.getComentario());
         reservaRepo.save(reserva);
 
 

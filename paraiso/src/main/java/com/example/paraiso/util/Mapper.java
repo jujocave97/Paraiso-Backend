@@ -50,6 +50,7 @@ public class Mapper {
         reservaCakeDTO.setEstado(reservaCake.getEstado().toString());
         reservaCakeDTO.setCantidad(reservaCake.getCantidadReservada());
         reservaCakeDTO.setId(Long.toString(reservaCake.getId()));
+        reservaCakeDTO.setComentario(reservaCakeDTO.getComentario());
 
         return reservaCakeDTO;
     }
