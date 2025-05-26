@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
 
 import java.util.List;
 
@@ -42,12 +43,15 @@ public class ReservaController {
         return ResponseEntity.ok(reserva);
     }
 
-    @GetMapping("/{id}") // usuario registrado
-    public ResponseEntity<?> reservasUsuario(
-            @PathVariable String id
-    ){
-        return ResponseEntity.ok(reservaService.reservasUsuario(id));
+
+
+    @GetMapping("/mis-reservas")
+    @PreAuthorize("hasRole('USUARIO')")
+    public ResponseEntity<?> reservasUsuario(Authentication authentication) {
+        String email = authentication.getName(); // el email del usuario autenticado
+        return ResponseEntity.ok(reservaService.reservasUsuario(email));
     }
+
 
     @DeleteMapping("/{reservaID}") // preguntar si quiere una confirmacion de la tienda para poder hacer la eliminacion
     @PreAuthorize("hasRole('ADMIN')")

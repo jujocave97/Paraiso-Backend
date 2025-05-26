@@ -74,16 +74,14 @@ public class ReservaCakeService {
         return dtos;
     }
 
-    public List<ReservaCakeDTO> reservasUsuario (String id){
-        Long idl = Long.parseLong(id);
-        User user = userRepo.findById(idl).orElseThrow();// manejar error usuairo no encontrado
-        String email = user.getEmail();
+    public List<ReservaCakeDTO> reservasUsuario (String email){
+        User user = userRepo.findByEmail(email).orElseThrow();// manejar error usuairo no encontrado
 
         if(!authService.isAdminOrSameUser(email)){
             // throw error
         }
 
-        List<ReservaCake> reservaCakes = reservaRepo.findByUsuarioId(idl);
+        List<ReservaCake> reservaCakes = reservaRepo.findByUsuarioId(user.getId());
         List<ReservaCakeDTO> reservaCakeDTOS = new ArrayList<>();
 
         for(ReservaCake reservaCake: reservaCakes){
