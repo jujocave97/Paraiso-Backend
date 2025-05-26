@@ -1,6 +1,7 @@
 package com.example.paraiso.service;
 
 import com.example.paraiso.dto.ReservaCakeDTO;
+import com.example.paraiso.exception.ReservaNoPendienteException;
 import com.example.paraiso.model.Cake;
 import com.example.paraiso.model.EstadoReserva;
 import com.example.paraiso.model.ReservaCake;
@@ -92,15 +93,22 @@ public class ReservaCakeService {
     }
 
     public ReservaCakeDTO deleteReserva(String reservaId){
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Long idl = Long.parseLong(reservaId);
-
-        if(authService.isAdminOrSameUser(email)){
-            // throw exception
-        }
-
         ReservaCake reserva = reservaRepo.findById(idl)
                 .orElseThrow(() -> new RuntimeException("Reserva no encontrada")); // manejar esta excepcion
+
+        reservaRepo.delete(reserva);
+        return Mapper.reservaCakeToDTO(reserva);
+    }
+
+    public ReservaCakeDTO deleteReservaRolUsuario(String reservaId){
+        Long idl = Long.parseLong(reservaId);
+        ReservaCake reserva = reservaRepo.findById(idl)
+                .orElseThrow(() -> new RuntimeException("Reserva no encontrada"));
+
+        if (!reserva.getEstado().equals(EstadoReserva.PENDIENTE)) {
+            throw new ReservaNoPendienteException("Solo se pueden eliminar reservas en estado PENDIENTE");
+        }
 
         reservaRepo.delete(reserva);
         return Mapper.reservaCakeToDTO(reserva);
