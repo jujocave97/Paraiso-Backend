@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 public class ReservaCakeDTO {
     private String id;
     private String usuario;
+    private String email;
     private String cakeId;
     private int cantidad;
     private String estado;
@@ -17,6 +18,18 @@ public class ReservaCakeDTO {
     public ReservaCakeDTO(String cakeId, int cantidad) {
         this.cakeId = cakeId;
         this.cantidad = cantidad;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setCakeId(String cakeId) {
+        this.cakeId = cakeId;
     }
 
     public String getUsuario() {

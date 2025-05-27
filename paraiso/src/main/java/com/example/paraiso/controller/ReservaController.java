@@ -59,6 +59,14 @@ public class ReservaController {
         return ResponseEntity.ok(reservaService.reservasUsuario(email));
     }
 
+   @GetMapping("/{email}")
+   @PreAuthorize("hasRole('ADMIN')")
+   public ResponseEntity<?> resvervasUsuarioNombre(
+           @PathVariable String email
+   ){
+        return ResponseEntity.ok(reservaService.reservasUsuario(email));
+   }
+
 
     @DeleteMapping("/{reservaID}")
     @PreAuthorize("hasRole('ADMIN')")

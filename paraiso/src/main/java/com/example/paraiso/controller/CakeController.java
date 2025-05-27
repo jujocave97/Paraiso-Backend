@@ -53,6 +53,6 @@ public class CakeController {  // todo: crear service
     ){
         return ResponseEntity.ok(cakeService.deleteCake(id));
     }
-
+    //todo:  manejar error de que las tartas no se pueden borrar si estan reservadas
 
 }

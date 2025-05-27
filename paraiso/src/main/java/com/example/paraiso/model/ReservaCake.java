@@ -30,7 +30,7 @@ public class ReservaCake {
     private LocalDateTime fechaReserva = LocalDateTime.now();
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, length = 50)
     private EstadoReserva estado = EstadoReserva.PENDIENTE;
 
     private String comentario;
