@@ -4,6 +4,7 @@ import com.example.paraiso.dto.CakeDTO;
 import com.example.paraiso.service.AuthService;
 import com.example.paraiso.service.CakeService;
 import com.example.paraiso.service.ReservaCakeService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -33,7 +34,7 @@ public class CakeController {  // todo: crear service
     // Crear tarta (ADMIN)
     @PostMapping("/create")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<CakeDTO> createCake(@RequestBody CakeDTO cake) {
+    public ResponseEntity<CakeDTO> createCake(@Valid @RequestBody CakeDTO cake) {
         return ResponseEntity.ok(cakeService.crearCake(cake));
         // manejar errores
     }
@@ -41,7 +42,7 @@ public class CakeController {  // todo: crear service
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updateCake(
-            @PathVariable String id, @RequestBody CakeDTO cakeDTO
+            @PathVariable String id,@Valid @RequestBody CakeDTO cakeDTO
     ){
         return ResponseEntity.ok(cakeService.updateCake(id, cakeDTO));
     }

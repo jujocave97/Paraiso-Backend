@@ -1,12 +1,32 @@
 package com.example.paraiso.dto;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+
 public class UserInformationDTO {
-    private String nombre;
-    private String apellidos;
-    private String telefono;
-    private String email;
-    private String rol;
     private String id;
+    @NotBlank(message = "El nombre es obligatorio")
+    @Size(max = 50)
+    @Pattern(regexp = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s'-]+$", message = "El nombre contiene caracteres no válidos")
+    private String nombre;
+
+    @NotBlank(message = "Los apellidos son obligatorios")
+    @Size(max = 100)
+    @Pattern(regexp = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s'-]+$", message = "Los apellidos contienen caracteres no válidos")
+    private String apellidos;
+
+    @NotBlank(message = "El teléfono es obligatorio")
+    @Pattern(regexp = "^\\+?[0-9]{7,15}$", message = "Teléfono no válido")
+    private String telefono;
+
+    @NotBlank(message = "El email es obligatorio")
+    @Email(message = "Formato de email inválido")
+    private String email;
+
+    @Pattern(regexp = "^(USUARIO|ADMIN)?$", message = "Rol inválido")
+    private String rol;
 
     public UserInformationDTO() {
     }

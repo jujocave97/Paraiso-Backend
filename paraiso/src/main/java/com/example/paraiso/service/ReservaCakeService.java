@@ -89,6 +89,8 @@ public class ReservaCakeService {
             reservaCakeDTOS.add(Mapper.reservaCakeToDTO(reservaCake));
         }
 
+        reservaCakeDTOS.sort((a, b) -> b.getFechaReserva().compareTo(a.getFechaReserva()));
+
         return reservaCakeDTOS;
     }
 

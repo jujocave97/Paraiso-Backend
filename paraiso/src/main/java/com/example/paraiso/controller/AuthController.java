@@ -7,6 +7,7 @@ import com.example.paraiso.model.User;
 import com.example.paraiso.repository.UserRepository;
 import com.example.paraiso.security.JwtUtil;
 import com.example.paraiso.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.*;
@@ -32,12 +33,12 @@ public class AuthController { // todo: crear service
 
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody SignUpDTO user) {
+    public ResponseEntity<?> register(@Valid @RequestBody SignUpDTO user) {
         return ResponseEntity.ok(userService.register(user));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody AuthRequest authRequest) {
+    public ResponseEntity<?> login(@Valid @RequestBody AuthRequest authRequest) {
         authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword())
         );

@@ -1,15 +1,35 @@
 package com.example.paraiso.dto;
 
+import jakarta.validation.constraints.*;
+
 import java.time.LocalDateTime;
 
 public class ReservaCakeDTO {
     private String id;
+
+    //@NotBlank(message = "El nombre de usuario es obligatorio")
+    @Size(max = 50)
+    @Pattern(regexp = "^[a-zA-Z0-9_.-]{3,50}$", message = "Usuario inválido")
     private String usuario;
+
+    //@NotBlank(message = "El email es obligatorio")
+    @Email(message = "Formato de email inválido")
     private String email;
+
+    @NotBlank(message = "El ID de la tarta es obligatorio")
     private String cakeId;
+
+    @Min(value = 1, message = "Debe reservar al menos una tarta")
+    @Max(value = 3, message = "No puedes reservar más de 3 tartas")
     private int cantidad;
+
+    @Pattern(regexp = "^(PENDIENTE|CONFIRMADA|CANCELADA)?$", message = "Estado inválido")
     private String estado;
+
     private LocalDateTime fechaReserva;
+
+    @Size(max = 255, message = "El comentario no puede superar los 255 caracteres")
+    @Pattern(regexp = "^[^<>]*$", message = "El comentario no puede contener caracteres peligrosos como < o >")
     private String comentario;
     public ReservaCakeDTO() {
 

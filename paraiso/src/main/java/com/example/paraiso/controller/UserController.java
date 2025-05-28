@@ -8,6 +8,7 @@ import com.example.paraiso.repository.UserRepository;
 import com.example.paraiso.security.JwtUtil;
 import com.example.paraiso.service.AuthService;
 import com.example.paraiso.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -55,7 +56,7 @@ public class UserController {
 
     @PutMapping("/{email}")
     public ResponseEntity<?> updateUser(
-            @PathVariable String email, @RequestBody UserInformationDTO userInformationDTO
+            @PathVariable String email, @Valid @RequestBody UserInformationDTO userInformationDTO
     ){
         if (!authService.isAdminOrSameUser(email)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No autorizado");

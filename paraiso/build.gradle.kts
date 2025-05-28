@@ -53,6 +53,11 @@ dependencies {
 	testImplementation("org.springframework.security:spring-security-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
+	//validaciones
+	implementation("org.springframework.boot:spring-boot-starter-validation")
+	implementation("org.hibernate.validator:hibernate-validator:8.0.1.Final")
+
+
 }
 
 tasks.withType<Test> {

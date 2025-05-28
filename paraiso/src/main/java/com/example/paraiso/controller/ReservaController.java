@@ -3,6 +3,7 @@ package com.example.paraiso.controller;
 import com.example.paraiso.dto.ReservaCakeDTO;
 import com.example.paraiso.service.AuthService;
 import com.example.paraiso.service.ReservaCakeService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,7 +41,7 @@ public class ReservaController {
     // Reservar tarta
     @PostMapping("/reservar")
     public ResponseEntity<ReservaCakeDTO> reservarCake(
-            @RequestBody ReservaCakeDTO reservaCakeDTO
+            @Valid @RequestBody ReservaCakeDTO reservaCakeDTO
     ) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         ReservaCakeDTO reserva = reservaService.reservarCake(email,reservaCakeDTO);
