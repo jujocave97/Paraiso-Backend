@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.HashMap;
@@ -49,4 +50,48 @@ public class GlobalExceptionHandler {
         error.put("error", "⚠️ Error interno: " + ex.getMessage());
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @ExceptionHandler(UsuarioNoEncontradoException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Map<String, String> handleUsuarioNoEncontrado(UsuarioNoEncontradoException ex) {
+        return Map.of("error", ex.getMessage());
+    }
+
+    @ExceptionHandler(CakeNoEncontradoException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Map<String, String> handleCakeNoEncontrado(CakeNoEncontradoException ex) {
+        return Map.of("error", ex.getMessage());
+    }
+
+    @ExceptionHandler(ReservaNoEncontradaException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Map<String, String> handleReservaNoEncontrada(ReservaNoEncontradaException ex) {
+        return Map.of("error", ex.getMessage());
+    }
+
+    @ExceptionHandler(AccesoNoAutorizadoException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public Map<String, String> handleAccesoNoAutorizado(AccesoNoAutorizadoException ex) {
+        return Map.of("error", ex.getMessage());
+    }
+
+
+    @ExceptionHandler(UsuarioYaExistenteException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> handleUsuarioYaExiste(UsuarioYaExistenteException ex) {
+        return Map.of("error", ex.getMessage());
+    }
+
+    @ExceptionHandler(FormatoInvalidoException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> handleFormatoInvalido(FormatoInvalidoException ex) {
+        return Map.of("error", ex.getMessage());
+    }
+
+    @ExceptionHandler(DatosInvalidosException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> handleDatosInvalidos(DatosInvalidosException ex) {
+        return Map.of("error", ex.getMessage());
+    }
+
 }

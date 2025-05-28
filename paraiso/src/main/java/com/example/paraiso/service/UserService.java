@@ -2,6 +2,9 @@ package com.example.paraiso.service;
 
 import com.example.paraiso.dto.SignUpDTO;
 import com.example.paraiso.dto.UserInformationDTO;
+import com.example.paraiso.exception.FormatoInvalidoException;
+import com.example.paraiso.exception.UsuarioNoEncontradoException;
+import com.example.paraiso.exception.UsuarioYaExistenteException;
 import com.example.paraiso.model.User;
 import com.example.paraiso.repository.UserRepository;
 import com.example.paraiso.util.Mapper;
@@ -21,15 +24,15 @@ public class UserService {
 
     public SignUpDTO register(SignUpDTO userDTO){
         if(userRepository.existsByEmail(userDTO.getEmail())){
-            //throw new DuplicatedException("El agente ya existe");
+            throw new UsuarioYaExistenteException("El usuario ya existe");
         }
 
         if(userDTO.getPassword().length() > 15 || userDTO.getPassword().length() < 3){
-            //throw new BadRequestException("Formato de contraseña inválido");
+            throw new FormatoInvalidoException("La contraseña debe tener entre 3 y 15 caracteres");
         }
 
         if (!isEmailValid(userDTO.getEmail())) {
-            throw new IllegalArgumentException("Formato de email inválido");
+            throw new FormatoInvalidoException("Formato de email inválido");
         }
 
 
@@ -60,23 +63,23 @@ public class UserService {
 
     public UserInformationDTO getUser(String email){
         if(email.isBlank()){
-            // throw error
+            throw new FormatoInvalidoException("El email no puede esta vacío");
         }
 
-        User u = userRepository.findByEmail(email).orElseThrow(); // manejar excepcion
+        User u = userRepository.findByEmail(email).orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado")); // manejar excepcion
         return Mapper.userToUserInformation(u);
     }
 
     public UserInformationDTO updateUser(String email, UserInformationDTO userInfo){
         if(email.isEmpty() || email.isBlank()) {
-            // throw error
+            throw new FormatoInvalidoException("El email no puede estar vacío");
         }
 
         if(userInfo.getNombre().isEmpty() || userInfo.getApellidos().isEmpty() || userInfo.getEmail().isEmpty() || userInfo.getTelefono().isEmpty()){
-            // throw error
+            throw new FormatoInvalidoException("Todos los campos son obligatorios");
         }
 
-        User u = userRepository.findByEmail(email).orElseThrow(); // manejar excepcion
+        User u = userRepository.findByEmail(email).orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado")); // manejar excepcion
         u.setNombre(userInfo.getNombre());
         u.setApellido(userInfo.getApellidos());
         u.setEmail(userInfo.getEmail());
@@ -90,7 +93,7 @@ public class UserService {
 
     public UserInformationDTO deleteUser (String email){
 
-        User u = userRepository.findByEmail(email).orElseThrow(); // manejar excepcion
+        User u = userRepository.findByEmail(email).orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado")); // manejar excepcion
         userRepository.delete(u);
 
         return Mapper.userToUserInformation(u);

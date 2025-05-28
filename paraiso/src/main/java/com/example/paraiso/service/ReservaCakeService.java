@@ -1,7 +1,10 @@
 package com.example.paraiso.service;
 
 import com.example.paraiso.dto.ReservaCakeDTO;
+import com.example.paraiso.exception.CakeNoEncontradoException;
+import com.example.paraiso.exception.ReservaNoEncontradaException;
 import com.example.paraiso.exception.ReservaNoPendienteException;
+import com.example.paraiso.exception.UsuarioNoEncontradoException;
 import com.example.paraiso.model.Cake;
 import com.example.paraiso.model.EstadoReserva;
 import com.example.paraiso.model.ReservaCake;
@@ -34,13 +37,13 @@ public class ReservaCakeService {
 
     public ReservaCakeDTO reservarCake(String email,ReservaCakeDTO reservaCakeDTO) {
         User user = userRepo.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+                .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado"));
 
 
         Long idL = Long.parseLong(reservaCakeDTO.getCakeId());
 
         Cake cake = cakeRepo.findById(idL)
-                .orElseThrow(() -> new RuntimeException("Cake no encontrado"));
+                .orElseThrow(() -> new CakeNoEncontradoException("Tarta no encontrada"));
 
         ReservaCake reserva = new ReservaCake();
         reserva.setUsuario(user);
@@ -56,7 +59,7 @@ public class ReservaCakeService {
     public ReservaCakeDTO actualizarEstado(String reservaId, String nuevoEstado) {
         Long idL = Long.parseLong(reservaId);
         ReservaCake reserva = reservaRepo.findById(idL)
-                .orElseThrow(() -> new RuntimeException("Reserva no encontrada"));
+                .orElseThrow(() -> new ReservaNoEncontradaException("Reserva no encontrada"));
 
         reserva.setEstado(EstadoReserva.valueOf(nuevoEstado));
         reservaRepo.save(reserva);
@@ -76,7 +79,7 @@ public class ReservaCakeService {
     }
 
     public List<ReservaCakeDTO> reservasUsuario (String email){
-        User user = userRepo.findByEmail(email).orElseThrow();// manejar error usuairo no encontrado
+        User user = userRepo.findByEmail(email).orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado"));// manejar error usuairo no encontrado
 
         if(!authService.isAdminOrSameUser(email)){
             // throw error
@@ -98,7 +101,7 @@ public class ReservaCakeService {
     public ReservaCakeDTO deleteReserva(String reservaId){
         Long idl = Long.parseLong(reservaId);
         ReservaCake reserva = reservaRepo.findById(idl)
-                .orElseThrow(() -> new RuntimeException("Reserva no encontrada")); // manejar esta excepcion
+                .orElseThrow(() -> new ReservaNoEncontradaException("Reserva no encontrada")); // manejar esta excepcion
 
         reservaRepo.delete(reserva);
         return Mapper.reservaCakeToDTO(reserva);
@@ -107,7 +110,7 @@ public class ReservaCakeService {
     public ReservaCakeDTO deleteReservaRolUsuario(String reservaId){
         Long idl = Long.parseLong(reservaId);
         ReservaCake reserva = reservaRepo.findById(idl)
-                .orElseThrow(() -> new RuntimeException("Reserva no encontrada"));
+                .orElseThrow(() -> new ReservaNoEncontradaException("Reserva no encontrada"));
 
         if (!reserva.getEstado().equals(EstadoReserva.PENDIENTE)) {
             throw new ReservaNoPendienteException("Solo se pueden eliminar reservas en estado PENDIENTE");
