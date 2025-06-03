@@ -17,7 +17,8 @@ public class ReservaCake {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = false)
+    @ManyToOne
+    @JoinColumn(name = "usuario_id", nullable = true)
     private User usuario;
 
     @ManyToOne(optional = false)

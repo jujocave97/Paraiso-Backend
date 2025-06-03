@@ -5,7 +5,9 @@ import com.example.paraiso.dto.UserInformationDTO;
 import com.example.paraiso.exception.FormatoInvalidoException;
 import com.example.paraiso.exception.UsuarioNoEncontradoException;
 import com.example.paraiso.exception.UsuarioYaExistenteException;
+import com.example.paraiso.model.ReservaCake;
 import com.example.paraiso.model.User;
+import com.example.paraiso.repository.ReservaCakeRepository;
 import com.example.paraiso.repository.UserRepository;
 import com.example.paraiso.util.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,8 @@ public class UserService {
     private UserRepository userRepository;
     @Autowired
     private PasswordEncoder encoder;
+    @Autowired
+    private ReservaCakeRepository reservaCakeRepository;
 
     public SignUpDTO register(SignUpDTO userDTO){
         if(userRepository.existsByEmail(userDTO.getEmail())){
@@ -94,8 +98,15 @@ public class UserService {
     public UserInformationDTO deleteUser (String email){
 
         User u = userRepository.findByEmail(email).orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado")); // manejar excepcion
-        userRepository.delete(u);
 
+        List<ReservaCake> reservas = reservaCakeRepository.findByUsuarioId(u.getId());
+        for (ReservaCake reserva : reservas) {
+            reserva.setUsuario(userRepository.getReferenceById(1L));
+            // Buscar otra solucion
+        }
+        reservaCakeRepository.saveAll(reservas);
+
+        userRepository.delete(u);
         return Mapper.userToUserInformation(u);
     }
 }

@@ -57,6 +57,8 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.hibernate.validator:hibernate-validator:8.0.1.Final")
 
+	//sendgrid
+	implementation("com.sendgrid:sendgrid-java:4.10.1")
 
 }
 
