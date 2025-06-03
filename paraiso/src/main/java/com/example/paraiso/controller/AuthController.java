@@ -5,17 +5,21 @@ import com.example.paraiso.dto.SignUpDTO;
 import com.example.paraiso.model.User;
 import com.example.paraiso.repository.UserRepository;
 import com.example.paraiso.security.JwtUtil;
+import com.example.paraiso.service.EmailService;
 import com.example.paraiso.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.*;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -31,6 +35,8 @@ public class AuthController { // todo: crear service
     private PasswordEncoder encoder;
     @Autowired
     private JwtUtil jwtUtil;
+    @Autowired
+    private EmailService emailService;
 
 
     @PostMapping("/register")
@@ -53,4 +59,38 @@ public class AuthController { // todo: crear service
                 "email", user.getEmail()
         ));
     }
+
+    @PostMapping("/recover")
+    public String recuperarPassword(@RequestParam String email) {
+        Optional<User> usuarioOpt = userRepo.findByEmail(email);
+        if (usuarioOpt.isPresent()) {
+            String token = UUID.randomUUID().toString(); // o genera un JWT temporal
+            User usuario = usuarioOpt.get();
+            usuario.setTokenRecuperacion(token);
+            userRepo.save(usuario);
+
+            String enlace = "http://localhost:5173/reset-password/" + token; // Ajusta al frontend
+            String cuerpo = "Haz clic en el siguiente enlace para restablecer tu contraseña:\n" + enlace;
+            emailService.enviarCorreo(email, "Recuperación de contraseña", cuerpo);
+
+            return "Correo enviado";
+        } else {
+            return "Usuario no encontrado";
+        }
+    }
+
+    @PostMapping("/reset-password")
+    public String resetPassword(@RequestParam String token, @RequestParam String nuevaPassword) {
+        Optional<User> usuarioOpt = userRepo.findByTokenRecuperacion(token);
+        if (usuarioOpt.isPresent()) {
+            User usuario = usuarioOpt.get();
+            usuario.setPassword(encoder.encode(nuevaPassword));
+            usuario.setTokenRecuperacion(null); // limpia el token
+            userRepo.save(usuario);
+            return "Contraseña actualizada con éxito";
+        } else {
+            return "Token inválido o expirado";
+        }
+    }
+
 }

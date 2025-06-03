@@ -33,8 +33,8 @@ public class User {
     @Pattern(regexp = "^\\+?\\d{9,15}$", message = "Número de teléfono inválido")
     private String telefono;
 
-    @Column(name = "reset_password_token")
-    private String resetPasswordToken;
+    @Column(name = "token_recuperacion")
+    private String tokenRecuperacion;
 
     @Column(name = "token_expiration")
     private LocalDateTime tokenExpiration;
@@ -91,12 +91,12 @@ public class User {
         this.telefono = telefono;
     }
 
-    public String getResetPasswordToken() {
-        return resetPasswordToken;
+    public String getTokenRecuperacion() {
+        return tokenRecuperacion;
     }
 
-    public void setResetPasswordToken(String resetPasswordToken) {
-        this.resetPasswordToken = resetPasswordToken;
+    public void setTokenRecuperacion(String tokenRecuperacion) {
+        this.tokenRecuperacion = tokenRecuperacion;
     }
 
     public LocalDateTime getTokenExpiration() {
