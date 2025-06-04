@@ -79,18 +79,47 @@ public class AuthController { // todo: crear service
         }
     }
 
-    @PostMapping("/reset-password")
-    public String resetPassword(@RequestParam String token, @RequestParam String nuevaPassword) {
-        Optional<User> usuarioOpt = userRepo.findByTokenRecuperacion(token);
-        if (usuarioOpt.isPresent()) {
-            User usuario = usuarioOpt.get();
-            usuario.setPassword(encoder.encode(nuevaPassword));
-            usuario.setTokenRecuperacion(null); // limpia el token
-            userRepo.save(usuario);
-            return "Contraseña actualizada con éxito";
-        } else {
-            return "Token inválido o expirado";
+    public static class ResetPasswordRequest {
+        public String token;
+        public String nuevaPassword;
+
+        public String getToken() {
+            return token;
+        }
+
+        public void setToken(String token) {
+            this.token = token;
+        }
+
+        public String getNuevaPassword() {
+            return nuevaPassword;
+        }
+
+        public void setNuevaPassword(String nuevaPassword) {
+            this.nuevaPassword = nuevaPassword;
         }
     }
 
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordRequest request) {
+        try {
+            Optional<User> usuarioOpt = userRepo.findByTokenRecuperacion(request.getToken());
+
+            if (usuarioOpt.isPresent()) {
+                User usuario = usuarioOpt.get();
+                usuario.setPassword(encoder.encode(request.getNuevaPassword()));
+                usuario.setTokenRecuperacion(null);
+                userRepo.save(usuario);
+                return ResponseEntity.ok("Contraseña actualizada con éxito");
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Token inválido o expirado");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error del servidor: " + e.getMessage());
+        }
+    }
+
+
 }
+
