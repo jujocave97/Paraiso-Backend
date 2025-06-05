@@ -102,7 +102,6 @@ public class UserService {
         List<ReservaCake> reservas = reservaCakeRepository.findByUsuarioId(u.getId());
         for (ReservaCake reserva : reservas) {
             reserva.setUsuario(userRepository.getReferenceById(1L));
-            // Buscar otra solucion
         }
         reservaCakeRepository.saveAll(reservas);
 
