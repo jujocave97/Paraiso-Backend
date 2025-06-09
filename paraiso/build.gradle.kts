@@ -57,6 +57,9 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.hibernate.validator:hibernate-validator:8.0.1.Final")
 
+	//stripes
+	implementation("com.stripe:stripe-java:24.6.0")
+
 }
 
 tasks.withType<Test> {
