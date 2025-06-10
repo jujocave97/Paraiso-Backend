@@ -32,7 +32,8 @@ public class ReservaCakeService {
     private ReservaCakeRepository reservaRepo;
     @Autowired
     private AuthService authService;
-
+    @Autowired
+    private EmailService emailService;
 
 
     public ReservaCakeDTO reservarCake(String email,ReservaCakeDTO reservaCakeDTO) {
@@ -61,11 +62,34 @@ public class ReservaCakeService {
         ReservaCake reserva = reservaRepo.findById(idL)
                 .orElseThrow(() -> new ReservaNoEncontradaException("Reserva no encontrada"));
 
-        reserva.setEstado(EstadoReserva.valueOf(nuevoEstado));
+        EstadoReserva estadoAnterior = reserva.getEstado();
+        EstadoReserva estadoNuevo = EstadoReserva.valueOf(nuevoEstado);
+        reserva.setEstado(estadoNuevo);
         reservaRepo.save(reserva);
+
+        if (estadoNuevo == EstadoReserva.LISTO_PARA_RECOGER && estadoAnterior != estadoNuevo) {
+            String email = reserva.getUsuario().getEmail();
+            String asunto = "Tu pedido está listo para recoger";
+            String cuerpo = "Hola " + email + ",\n\n"
+                    + "Tu pedido de " + reserva.getCake().getNombre() + " ya está listo para recoger.\n"
+                    + "Puedes venir a buscarlo cuando quieras.\n\n"
+                    + "Gracias por confiar en nosotros.\n\n"
+                    + "Saludos,\nPARAÍSO";
+            emailService.enviarCorreo(email, asunto, cuerpo);
+        }
+
+        if (estadoNuevo == EstadoReserva.CANCELADA && estadoAnterior != estadoNuevo) {
+            String email = reserva.getUsuario().getEmail();
+            String asunto = "Tu pedido ha sido cancelado";
+            String cuerpo = "Hola " + email + ",\n\n"
+                    + "Tu pedido de " + reserva.getCake().getNombre() + " ha sido cancelado.\n"
+                    + "Saludos,\nPARAÍSO";
+            emailService.enviarCorreo(email, asunto, cuerpo);
+        }
 
         return Mapper.reservaCakeToDTO(reserva);
     }
+
 
     public List<ReservaCakeDTO> obtenerTodasLasReservas() {
         List<ReservaCake> reservas = reservaRepo.findAll();
