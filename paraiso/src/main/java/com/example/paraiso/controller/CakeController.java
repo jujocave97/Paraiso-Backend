@@ -26,10 +26,15 @@ public class CakeController {  // todo: crear service
 
 
     // Listar tartas
-    @CrossOrigin(origins = "${frontend.url}")
+    //@CrossOrigin(origins = "${frontend.url}")
     @GetMapping("/")
-    public List<CakeDTO> getAllCakes() {
-        return cakeService.getAllCakes();
+    public ResponseEntity<?> getAllCakes() {
+        try {
+            List<CakeDTO> cakes = cakeService.getAllCakes();
+            return ResponseEntity.ok(cakes);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error al obtener tartas: " + e.getMessage());
+        }
     }
 
     // Crear tarta (ADMIN)
