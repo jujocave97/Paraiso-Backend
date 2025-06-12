@@ -9,6 +9,7 @@ import com.example.paraiso.service.EmailService;
 import com.example.paraiso.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.*;
@@ -34,6 +35,8 @@ public class AuthController { // todo: crear service
     private JwtUtil jwtUtil;
     @Autowired
     private EmailService emailService;
+    @Value("${frontend.url}")
+    private String frontendUrl;
 
 
     @PostMapping("/register")
@@ -66,7 +69,7 @@ public class AuthController { // todo: crear service
             usuario.setTokenRecuperacion(token);
             userRepo.save(usuario);
 
-            String enlace = "http://localhost:5173/reset-password/" + token; // Ajusta al frontend
+            String enlace = frontendUrl+"/reset-password/" + token; // Ajusta al frontend
             String cuerpo = "Haz clic en el siguiente enlace para restablecer tu contraseña:\n" + enlace;
             emailService.enviarCorreo(email, "Recuperación de contraseña", cuerpo);
 

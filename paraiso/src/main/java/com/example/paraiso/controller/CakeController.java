@@ -6,6 +6,7 @@ import com.example.paraiso.service.CakeService;
 import com.example.paraiso.service.ReservaCakeService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,7 @@ public class CakeController {  // todo: crear service
 
 
     // Listar tartas
-    @CrossOrigin(origins = "http://localhost:5173")
+    @CrossOrigin(origins = "${frontend.url}")
     @GetMapping("/")
     public List<CakeDTO> getAllCakes() {
         return cakeService.getAllCakes();
@@ -54,6 +55,5 @@ public class CakeController {  // todo: crear service
     ){
         return ResponseEntity.ok(cakeService.deleteCake(id));
     }
-    //todo:  manejar error de que las tartas no se pueden borrar si estan reservadas
 
 }
