@@ -2,12 +2,30 @@ package com.example.paraiso.config;
 
 import com.example.paraiso.model.User;
 import com.example.paraiso.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
 @Component
 public class AdminSeeder implements CommandLineRunner {
+
+    @Value("${admin.email}")
+    private String email;
+
+    @Value("${admin.password}")
+    private String password;
+
+    @Value("${admin.nombre}")
+    private String nombre;
+
+    @Value("${admin.apellido}")
+    private String apellido;
+
+    @Value("${admin.telefono}")
+    private String telefono;
+
+    @Value("${admin.rol}")
+    private String rol;
 
     private final UserRepository userRepo;
     private final PasswordEncoder passwordEncoder;
@@ -19,14 +37,14 @@ public class AdminSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        if (!userRepo.existsByEmail("admin@paraiso.com")) {
+        if (!userRepo.existsByEmail(email)) {
             User admin = new User();
-            admin.setEmail("admin@paraiso.com");
-            admin.setPassword(passwordEncoder.encode("admin123")); // 🔐 segura
-            admin.setNombre("Super");
-            admin.setApellido("Admin");
-            admin.setTelefono("999999999");
-            admin.setRol("ADMIN");
+            admin.setEmail(email);
+            admin.setPassword(passwordEncoder.encode(password));
+            admin.setNombre(nombre);
+            admin.setApellido(apellido);
+            admin.setTelefono(telefono);
+            admin.setRol(rol);
 
             userRepo.save(admin);
             System.out.println("✅ Usuario ADMIN creado por seed");
